@@ -4,8 +4,8 @@ public class Rover {
 	Point position;
 	char direction;
 
-	Rover(int x, int y, char d) {
-		this.position = new Point(x, y);
+	Rover(Point p, char d) {
+		this.position = new Point(p);
 		this.direction = d;
 	}
 
