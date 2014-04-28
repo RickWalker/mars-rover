@@ -6,9 +6,9 @@ import java.awt.Point;
 public class TestRover {
 
 	// simple creation tests first
-
+	// probably don't need this, but in case I did something dumb
 	@Test
-	public void WhenCreateRoverAt00North_ThenPositionDirectionAreCorrectAt00N() {
+	public void shouldPickUpZeroConstructorPositionAndDirection() {
 		Rover testRover = new RoverBuilder().withPosition(0, 0)
 				.withDirection('N').build();
 		assertEquals("Position of new rover should be 0, 0", new Point(0, 0),
@@ -18,7 +18,7 @@ public class TestRover {
 	}
 
 	@Test
-	public void WhenCreateRoverAt15North_ThenPositionDirectionAreCorrectAt15N() {
+	public void shouldPickUpNonZeroConstructorPositionAndDirection() {
 		Rover testRover = new RoverBuilder().withPosition(1, 5)
 				.withDirection('N').build();
 		assertEquals("Position of new rover should be 1, 5", new Point(1, 5),
@@ -30,7 +30,7 @@ public class TestRover {
 	// then some movement ones
 
 	@Test
-	public void WhenMoveForwardFrom00N_ThenPositionDirectionAreCorrectAt01N() {
+	public void shouldChangePositionWhenMovingForwardNorth() {
 		Rover testRover = new RoverBuilder().withPosition(0, 0)
 				.withDirection('N').build();
 		testRover.executeCommands("F");
@@ -43,7 +43,7 @@ public class TestRover {
 	}
 
 	@Test
-	public void WhenMoveBackwardFrom01N_ThenPositionDirectionAreCorrectAt00N() {
+	public void shouldChangePositionWhenMovingBackwardsNorth() {
 		Rover testRover = new RoverBuilder().withPosition(0, 1)
 				.withDirection('N').build();
 		testRover.executeCommands("B");
@@ -57,7 +57,7 @@ public class TestRover {
 
 	// then some turning ones
 	@Test
-	public void WhenTurnLeftFrom00N_ThenNewPositionDirectionIs00W() {
+	public void shouldChangeDirectionAndNotMoveWhenTurningLeftFromNorth() {
 		Rover testRover = new RoverBuilder().withPosition(0, 0)
 				.withDirection('N').build();
 		testRover.executeCommands("L");
@@ -72,7 +72,7 @@ public class TestRover {
 	}
 
 	@Test
-	public void WhenTurnLeftFrom00W_ThenNewPositionDirectionIs00S() {
+	public void shouldChangeDirectionAndNotMoveWhenTurningLeftFromWest() {
 		Rover testRover = new RoverBuilder().withPosition(0, 0)
 				.withDirection('W').build();
 		testRover.executeCommands("L");
@@ -86,7 +86,7 @@ public class TestRover {
 	}
 
 	@Test
-	public void WhenTurnLeftFrom00S_ThenNewPositionDirectionIs00E() {
+	public void shouldChangeDirectionAndNotMoveWhenTurningLeftFromSouth() {
 		Rover testRover = new RoverBuilder().withPosition(0, 0)
 				.withDirection('S').build();
 		testRover.executeCommands("L");
@@ -100,7 +100,7 @@ public class TestRover {
 	}
 
 	@Test
-	public void WhenTurnLeftFrom00E_ThenNewPositionDirectionIs00N() {
+	public void shouldChangeDirectionAndNotMoveWhenTurningLeftFromEast() {
 		Rover testRover = new RoverBuilder().withPosition(0, 0)
 				.withDirection('E').build();
 		testRover.executeCommands("L");
@@ -114,7 +114,7 @@ public class TestRover {
 	}
 
 	@Test
-	public void WhenTurnRightFrom00N_ThenNewPositionDirectionIs00E() {
+	public void shouldChangeDirectionAndNotMoveWhenTurningRightFromNorth() {
 		Rover testRover = new RoverBuilder().withPosition(0, 0)
 				.withDirection('N').build();
 		testRover.executeCommands("R");
@@ -129,7 +129,7 @@ public class TestRover {
 	}
 
 	@Test
-	public void WhenTurnRightFrom00E_ThenNewPositionDirectionIs00S() {
+	public void shouldChangeDirectionAndNotMoveWhenTurningRightFromEast() {
 		Rover testRover = new RoverBuilder().withPosition(0, 0)
 				.withDirection('E').build();
 		testRover.executeCommands("R");
@@ -143,10 +143,10 @@ public class TestRover {
 	}
 
 	@Test
-	public void WhenTurnRightFrom00S_ThenNewPositionDirectionIs00W() {
+	public void shouldChangeDirectionAndNotMoveWhenTurningRightFromSouth() {
 		Rover testRover = new RoverBuilder().withPosition(0, 0)
 				.withDirection('S').build();
-		
+
 		testRover.executeCommands("R");
 
 		assertEquals(
@@ -158,7 +158,7 @@ public class TestRover {
 	}
 
 	@Test
-	public void WhenTurnRightFrom00W_ThenNewPositionDirectionIs00N() {
+	public void shouldChangeDirectionAndNotMoveWhenTurningRightFromWest() {
 		Rover testRover = new RoverBuilder().withPosition(0, 0)
 				.withDirection('W').build();
 		testRover.executeCommands("R");
@@ -173,7 +173,7 @@ public class TestRover {
 
 	// now, some combo tests
 	@Test
-	public void WhenFFRFF_From_00N_ThenPositionDirectionShouldBe22E() {
+	public void shouldMoveTo22EWhenFFRFF_From_00N() {
 		Rover testRover = new RoverBuilder().withPosition(0, 0)
 				.withDirection('N').build();
 		testRover.executeCommands("FFRFF");
@@ -182,6 +182,123 @@ public class TestRover {
 				new Point(2, 2), testRover.getPosition());
 		assertEquals("Rover from 00N after FFRFF should be pointing E", 'E',
 				testRover.getDirection());
+	}
+
+	// now, test wrapping around grid
+	// y values first
+	@Test
+	public void shouldWrapTo00NWhenFFFFOn5x5Grid() {
+		Rover testRover = new RoverBuilder().withPosition(0, 0)
+				.withDirection('N').withGridSize(5, 5).build();
+
+		testRover.executeCommands("FFFFF");
+
+		assertEquals(
+				"Rover from 0,0N on 5x5 grid should be at 0 0 N after FFFFF, is at "
+						+ testRover.getPosition(), new Point(0, 0),
+				testRover.getPosition());
+	}
+
+	@Test
+	public void shouldWrapOnGridYAxisMaxWhenMovingBackwardsSouth() {
+		Rover testRover = new RoverBuilder().withPosition(0, 9)
+				.withDirection('S').build();
+
+		testRover.executeCommands("B");
+
+		assertEquals(
+				"Rover at 0 9 S on 10 x 10 grid should be at 0, 0 after B, is at "
+						+ testRover.getPosition(), new Point(0, 0),
+				testRover.getPosition());
+	}
+
+	@Test
+	public void shouldWrapOnGridYAxisMinWhenMovingForwardsSouth() {
+		Rover testRover = new RoverBuilder().withDirection('S').build();
+
+		testRover.executeCommands("F");
+
+		assertEquals(
+				"Rover at 0 0 S on 10 x 10 grid should be at 0, 9 after F, is at "
+						+ testRover.getPosition(), new Point(0, 9),
+				testRover.getPosition());
+	}
+
+	@Test
+	public void shouldWrapOnGridYAxisMaxWhenMovingForwardsNorth() {
+		Rover testRover = new RoverBuilder().withPosition(0, 9).build();
+
+		testRover.executeCommands("F");
+
+		assertEquals(
+				"Rover at 0 9 N on 10 x 10 grid should be at 0, 0 after F, is at "
+						+ testRover.getPosition(), new Point(0, 0),
+				testRover.getPosition());
+	}
+
+	@Test
+	public void shouldWrapOnGridYAxisMinWhenMovingBackwardsNorth() {
+		Rover testRover = new RoverBuilder().build();
+
+		testRover.executeCommands("B");
+
+		assertEquals(
+				"Rover at 0 0 N on 10 x 10 grid should be at 0, 9 after B, is at "
+						+ testRover.getPosition(), new Point(0, 9),
+				testRover.getPosition());
+	}
+
+	// then x values
+	@Test
+	public void shouldWrapGridOnXAxisMaxWhenMovingForwardsEast() {
+		Rover testRover = new RoverBuilder().withPosition(9, 0)
+				.withDirection('E').build();
+
+		testRover.executeCommands("F");
+
+		assertEquals(
+				"Rover at 9 0 E on 10 x 10 grid should be at 0, 0 after F, is at "
+						+ testRover.getPosition(), new Point(0, 0),
+				testRover.getPosition());
+	}
+
+	@Test
+	public void shouldWrapGridOnXAxisMaxWhenMovingBackwardsWest() {
+		Rover testRover = new RoverBuilder().withPosition(9, 0)
+				.withDirection('W').build();
+
+		testRover.executeCommands("B");
+
+		assertEquals(
+				"Rover at 9 0 W on 10 x 10 grid should be at 0, 0 after B, is at "
+						+ testRover.getPosition(), new Point(0, 0),
+				testRover.getPosition());
+	}
+
+	@Test
+	public void shouldWrapGridOnXAxisMinWhenMovingForwardsWest() {
+		Rover testRover = new RoverBuilder().withPosition(0, 0)
+				.withDirection('W').build();
+
+		testRover.executeCommands("F");
+
+		assertEquals(
+				"Rover at 0 0 W on 10 x 10 grid should be at 9, 0 after F, is at "
+						+ testRover.getPosition(), new Point(9, 0),
+				testRover.getPosition());
+	}
+
+	@Test
+	public void shouldWrapGridOnXAxisMinWhenMovingBackwardsEast() {
+		Rover testRover = new RoverBuilder().withPosition(0, 0)
+				.withDirection('E').build();
+
+		testRover.executeCommands("B");
+
+		assertEquals(
+				"Rover at 0 0 E on 10 x 10 grid should be at 9, 0 after B, is at "
+						+ testRover.getPosition(), new Point(9, 0),
+				testRover.getPosition());
 	}
 
 }
