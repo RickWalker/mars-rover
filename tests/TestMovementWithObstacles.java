@@ -92,5 +92,25 @@ public class TestMovementWithObstacles {
 
 		
 	}
-
+	
+	@Test
+	public void shouldIgnoreObstaclesWhenObstaclesAreNotInWay(){
+		Set<Point> testObstacles = new HashSet<Point>();
+		// create some obstacles
+		testObstacles.add(new Point(5, 5));
+		testObstacles.add(new Point(2, 4));
+		
+		Rover testRover = new RoverBuilder().withObstacles(testObstacles).build();
+		
+		boolean moveSuccessful = testRover.executeCommands("FFRFF");
+		
+		assertTrue("Move successful result expected was true", moveSuccessful);
+		
+		assertEquals(
+				"Rover expected to be at 2 2 E, is at "
+						+ testRover.getPosition() + " "
+						+ testRover.getDirection() + " with moveSuccessful at "
+						+ moveSuccessful, new Point(2, 2),
+				testRover.getPosition());	
+	}
 }
