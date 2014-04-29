@@ -14,6 +14,7 @@ public class RoverBuilder {
 
 	private Direction lookupDirectionState(char s) {
 		// looks up direction from char
+		// could do this in test cases, but would rather not expose implementation
 		switch (s) {
 		case 'N':
 			return new North();

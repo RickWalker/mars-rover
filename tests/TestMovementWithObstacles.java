@@ -69,5 +69,28 @@ public class TestMovementWithObstacles {
 
 		
 	}
+	
+	@Test
+	public void shouldMoveToLastPossiblePointBeforeFirstObstacleWhenMovementStringLeadsToObstacleAndMoreThanObstaclePresent(){
+		Set<Point> testObstacles = new HashSet<Point>();
+		// create some obstacles
+		testObstacles.add(new Point(2, 2));
+		testObstacles.add(new Point(1, 2));
+		
+		Rover testRover = new RoverBuilder().withObstacles(testObstacles).build();
+		
+		boolean moveSuccessful = testRover.executeCommands("FFRFF");
+		
+		assertFalse("Move successful result expected was false", moveSuccessful);
+		
+		assertEquals(
+				"Rover expected to be at 0 2 N, is at "
+						+ testRover.getPosition() + " "
+						+ testRover.getDirection() + " with moveSuccessful at "
+						+ moveSuccessful, new Point(0, 2),
+				testRover.getPosition());
+
+		
+	}
 
 }
