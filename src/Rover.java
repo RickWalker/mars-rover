@@ -3,12 +3,13 @@ import java.util.Set;
 
 public class Rover {
 	Point position;
-	char direction;
+	//char direction;
+	Direction direction;
 	int gridSizeX;
 	int gridSizeY;
 	Set<Point> obstacles;
 
-	Rover(Point p, char d, int xgrid, int ygrid, Set<Point> o) {
+	Rover(Point p, Direction d, int xgrid, int ygrid, Set<Point> o) {
 		this.position = new Point(p);
 		this.direction = d;
 		this.gridSizeX = xgrid;
@@ -17,7 +18,7 @@ public class Rover {
 	}
 
 	public char getDirection() {
-		return direction;
+		return direction.toChar();
 	}
 
 	public int getNumberOfObstacles() {
@@ -56,20 +57,8 @@ public class Rover {
 	boolean moveForward() {
 		// work out new position
 		Point newPosition = new Point(position);
-		switch (this.direction) {
-		case 'N':
-			newPosition.translate(0, 1);
-			break;
-		case 'S':
-			newPosition.translate(0, -1);
-			break;
-		case 'E':
-			newPosition.translate(1, 0);
-			break;
-		case 'W':
-			newPosition.translate(-1, 0);
-			break;
-		}
+		newPosition = direction.moveForward(newPosition);
+		
 		wrapMovement(newPosition);
 		return checkValidAndMove(newPosition);
 	}
@@ -92,20 +81,7 @@ public class Rover {
 
 	boolean moveBackward() {
 		Point newPosition = new Point(position);
-		switch (this.direction) {
-		case 'N':
-			newPosition.translate(0, -1);
-			break;
-		case 'S':
-			newPosition.translate(0, 1);
-			break;
-		case 'E':
-			newPosition.translate(-1, 0);
-			break;
-		case 'W':
-			newPosition.translate(1, 0);
-			break;
-		}
+		newPosition = direction.moveBackward(newPosition);
 
 		wrapMovement(newPosition);
 		return checkValidAndMove(newPosition);
@@ -123,37 +99,11 @@ public class Rover {
 	}
 
 	void turnLeft() {
-		switch (this.direction) {
-		case 'N':
-			this.direction = 'W';
-			break;
-		case 'W':
-			this.direction = 'S';
-			break;
-		case 'S':
-			this.direction = 'E';
-			break;
-		case 'E':
-			this.direction = 'N';
-			break;
-		}
+		direction = direction.turnLeft();
 	}
 
 	void turnRight() {
-		switch (this.direction) {
-		case 'N':
-			this.direction = 'E';
-			break;
-		case 'E':
-			this.direction = 'S';
-			break;
-		case 'S':
-			this.direction = 'W';
-			break;
-		case 'W':
-			this.direction = 'N';
-			break;
-		}
+		direction = direction.turnRight();
 	}
 
 	public Point getPosition() {

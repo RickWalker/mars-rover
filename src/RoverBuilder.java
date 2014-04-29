@@ -12,6 +12,22 @@ public class RoverBuilder {
 	int gridSizeY = 10;
 	Set<Point> obstacles = new HashSet<Point>();
 
+	private Direction lookupDirectionState(char s) {
+		// looks up direction from char
+		switch (s) {
+		case 'N':
+			return new North();
+		case 'S':
+			return new South();
+		case 'E':
+			return new East();
+		case 'W':
+			return new West();
+		default:
+			return null;
+		}
+	}
+
 	public RoverBuilder withPosition(int x, int y) {
 		this.position = new Point(x, y);
 		return this;
@@ -27,14 +43,14 @@ public class RoverBuilder {
 		gridSizeY = b;
 		return this;
 	}
-	
-	public RoverBuilder withObstacles(Set<Point> o){
+
+	public RoverBuilder withObstacles(Set<Point> o) {
 		this.obstacles = o;
 		return this;
 	}
 
 	public Rover build() {
-		return new Rover(position, direction, gridSizeX, gridSizeY, obstacles);
+		return new Rover(position, lookupDirectionState(direction), gridSizeX, gridSizeY, obstacles);
 	}
 
 }
